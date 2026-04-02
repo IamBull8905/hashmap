@@ -31,6 +31,13 @@ class HashMap {
       bucket = this.buckets[index];
     }
 
+    let indexInList = bucket.findIndex(givenKey);
+    if (indexInList !== -1) {
+      const node = bucket.at(indexInList);
+      node.value = { key: givenKey, value: givenValue };
+      return;
+    }
+
     let entriesRequired = Math.ceil(this.capacity * this.loadFactor);
     let entriesArray = this.entries();
 
@@ -43,18 +50,20 @@ class HashMap {
       for (const pair of oldArray) {
         this.set(pair.key, pair.value);
       }
+      index = this.hash(givenKey);
     }
-    let indexInList = bucket.findIndex(givenKey);
-    if (indexInList === -1) {
-      // adds new values into a linked list
-      if (bucket.size() === 0) {
-        bucket.prepend({ key: givenKey, value: givenValue });
-      } else {
-        bucket.append({ key: givenKey, value: givenValue });
-      }
+
+    if (!this.buckets[index]) {
+      bucket = new LinkedList();
+      this.buckets[index] = bucket;
     } else {
-      const node = bucket.at(indexInList);
-      node.value.value = givenValue;
+      bucket = this.buckets[index];
+    }
+
+    if (bucket.size() === 0) {
+      bucket.prepend({ key: givenKey, value: givenValue });
+    } else {
+      bucket.append({ key: givenKey, value: givenValue });
     }
   }
 
