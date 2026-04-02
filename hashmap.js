@@ -28,20 +28,29 @@ class HashMap {
       bucket = new LinkedList();
       this.buckets[index] = bucket;
     } else {
-      bucket = this.buckets[index]; // point to the linked list already there
+      bucket = this.buckets[index];
     }
 
-    let indexInList = bucket.findIndex(key);
-    if (indexInList === -1) {
-      // adds new values into a linked list
-      if (bucket.size === 0) {
-        bucket.prepend({ key: givenKey, value: givenValue });
+    let entriesRequired = Math.round(this.capacity * this.loadFactor);
+    let entriesArray = this.entries;
+
+    if (entriesArray.length < entriesRequired) {
+      let indexInList = bucket.findIndex(key);
+      if (indexInList === -1) {
+        // adds new values into a linked list
+        if (bucket.size === 0) {
+          bucket.prepend({ key: givenKey, value: givenValue });
+        } else {
+          bucket.append({ key: givenKey, value: givenValue });
+        }
       } else {
-        bucket.append({ key: givenKey, value: givenValue });
+        const node = bucket.at(indexInList);
+        node.value.storedValue = value;
       }
     } else {
-      const node = bucket.at(indexInList);
-      node.value.storedValue = value;
+      // double the existing array 
+      const newCapacity = this.capacity * 2;
+      this.buckets = new Array(newCapacity);
     }
   }
 
