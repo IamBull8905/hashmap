@@ -94,7 +94,7 @@ class LinkedList {
     let currentNode = this.#head;
     while (currentNode !== null) {
       let currentValue = currentNode.value;
-      if (currentValue === value) {
+      if (currentValue.value.key === value) {
         return true;
       }
       currentNode = currentNode.nextNode;
@@ -197,6 +197,55 @@ class LinkedList {
       currentNode = currentNode.nextNode;
       previousNode.nextNode = currentNode.nextNode;
       currentNode.nextNode = null;
+    }
+  }
+
+  findKeyCount() {
+    let currentNode = this.#head;
+    let count = 0;
+    while (currentNode !== null) {
+      if (currentNode.value.key !== null) {
+        count += 1;
+      }
+      currentNode = currentNode.nextNode;
+    }
+    return count;
+  }
+
+  findAllKeys() {
+    let currentNode = this.#head;
+    let keyArray = [];
+    while (currentNode !== null) {
+      if (currentNode.key !== null) {
+        keyArray.append(currentNode.value.key);
+      }
+      currentNode = currentNode.nextNode;
+    }
+    return keyArray;
+  }
+
+  findAllValues() {
+    let currentNode = this.#head;
+    let valueArray = [];
+    while (currentNode !== null) {
+      valueArray.append(currentNode.value.value);
+      currentNode = currentNode.nextNode;
+    }
+    return valueArray;
+  }
+
+  findAllPairs() {
+    let bucketPairs = [];
+    if (!this.#head) {
+      return;
+    } else {
+      let currentNode = this.#head;
+      while (currentNode !== null) {
+        let pair = currentNode.value;
+        bucketPairs.append(pair);
+        currentNode = currentNode.nextNode;
+      }
+      return bucketPairs;
     }
   }
 }

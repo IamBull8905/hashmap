@@ -17,7 +17,7 @@ class HashMap {
     return hashCode;
   }
 
-  set(key, value) {
+  set(givenKey, givenValue) {
     let index = this.hash(key);
     let bucket = null;
     if (index < 0 || index >= this.buckets.length) {
@@ -35,13 +35,96 @@ class HashMap {
     if (indexInList === -1) {
       // adds new values into a linked list
       if (bucket.size === 0) {
-        bucket.prepend({ storedKey: key, storedValue: value });
+        bucket.prepend({ key: givenKey, value: givenValue });
       } else {
-        bucket.append({ storedKey: key, storedValue: value });
+        bucket.append({ key: givenKey, value: givenValue });
       }
     } else {
       const node = bucket.at(indexInList);
       node.value.storedValue = value;
     }
+  }
+
+  get(key) {
+    let index = this.hash(key);
+    if (index < 0 || index >= this.buckets.length) {
+      throw new Error("Trying to access index out of bounds");
+    }
+    let bucket = this.buckets[index];
+
+    let indexInList = bucket.findIndex(key);
+    if (indexInList === -1) {
+      return null;
+    }
+    let pair = bucket.at(indexInList);
+    return pair.value;
+  }
+
+  has(key) {
+    let index = this.hash(key);
+    if (index < 0 || index >= this.buckets.length) {
+      throw new Error("Trying to access index out of bounds");
+    }
+    let bucket = this.buckets[index];
+
+    if (bucket.contains(key)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  remove(key) {
+    let index = this.hash(key);
+    if (index < 0 || index >= this.buckets.length) {
+      throw new Error("Trying to access index out of bounds");
+    }
+    let bucket = this.buckets[index];
+    let hasKey = this.has(key);
+    if (hasKey === false) {
+      return false;
+    }
+
+    let indexInList = bucket.findIndex(key);
+    bucket.removeAt(indexInList);
+    return true;
+  }
+
+  length() {
+    let allKeys = 0;
+    for (const bucket of this.buckets) {
+      if (bucket) {
+        allKeys += bucket.findKeyCount();
+      }
+    }
+    return allKeys;
+  }
+
+  clear() {
+    this.buckets = new Array(this.capacity);
+  }
+
+  keys() {
+    let allBucketKeys = [];
+    for (const bucket of this.buckets) {
+      allBucketKeys.concat(bucket.findAllKeys());
+    }
+    return allBucketKeys;
+  }
+
+  values() {
+    let allBucketValues = [];
+    for (const bucket of this.buckets) {
+      allBucketValues.concat(bucket.findAllValues());
+    }
+    return allBucketValues;
+  }
+
+  entries() {
+    let allBucketPairs = [];
+    for (const bucket of this.buckets) {
+      allBucketPairs.concat(bucket.findAllPairs());
+    }
+    return allBucketPairs;
   }
 }
