@@ -12,13 +12,13 @@ class HashMap {
     const primeNumber = 31;
 
     for (let i = 0; i < key.length; i++) {
-      hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % 16;
+      hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
     }
     return hashCode;
   }
 
   set(givenKey, givenValue) {
-    let index = this.hash(key);
+    let index = this.hash(givenKey);
     let bucket = null;
     if (index < 0 || index >= this.buckets.length) {
       throw new Error("Trying to access index out of bounds");
@@ -34,23 +34,26 @@ class HashMap {
     let entriesRequired = Math.round(this.capacity * this.loadFactor);
     let entriesArray = this.entries;
 
-    if (entriesArray.length < entriesRequired) {
-      let indexInList = bucket.findIndex(key);
-      if (indexInList === -1) {
-        // adds new values into a linked list
-        if (bucket.size === 0) {
-          bucket.prepend({ key: givenKey, value: givenValue });
-        } else {
-          bucket.append({ key: givenKey, value: givenValue });
-        }
+    if (entriesArray.length >= entriesRequired) {
+      let oldArray = this.buckets.entries();
+      for (let [key, value] of oldArray) {
+        this.set(key, value);
+      }
+      let newCapacity = this.capacity * 2;
+      this.capacity = newCapacity;
+      this.buckets = new Array(newCapacity);
+    }
+    let indexInList = bucket.findIndex(givenKey);
+    if (indexInList === -1) {
+      // adds new values into a linked list
+      if (bucket.size === 0) {
+        bucket.prepend({ key: givenKey, value: givenValue });
       } else {
-        const node = bucket.at(indexInList);
-        node.value.storedValue = value;
+        bucket.append({ key: givenKey, value: givenValue });
       }
     } else {
-      // double the existing array 
-      const newCapacity = this.capacity * 2;
-      this.buckets = new Array(newCapacity);
+      const node = bucket.at(indexInList);
+      node.value.value = givenValue;
     }
   }
 
@@ -116,7 +119,7 @@ class HashMap {
   keys() {
     let allBucketKeys = [];
     for (const bucket of this.buckets) {
-      allBucketKeys.concat(bucket.findAllKeys());
+      allBucketKeys = allBucketKeys.concat(bucket.findAllKeys());
     }
     return allBucketKeys;
   }
@@ -124,7 +127,7 @@ class HashMap {
   values() {
     let allBucketValues = [];
     for (const bucket of this.buckets) {
-      allBucketValues.concat(bucket.findAllValues());
+      allBucketValues = allBucketValues.concat(bucket.findAllValues());
     }
     return allBucketValues;
   }
@@ -132,7 +135,7 @@ class HashMap {
   entries() {
     let allBucketPairs = [];
     for (const bucket of this.buckets) {
-      allBucketPairs.concat(bucket.findAllPairs());
+      allBucketPairs = allBucketPairs.concat(bucket.findAllPairs());
     }
     return allBucketPairs;
   }
