@@ -31,22 +31,23 @@ class HashMap {
       bucket = this.buckets[index];
     }
 
-    let entriesRequired = Math.round(this.capacity * this.loadFactor);
-    let entriesArray = this.entries;
+    let entriesRequired = Math.ceil(this.capacity * this.loadFactor);
+    let entriesArray = this.entries();
 
     if (entriesArray.length >= entriesRequired) {
-      let oldArray = this.buckets.entries();
-      for (let [key, value] of oldArray) {
-        this.set(key, value);
-      }
+      let oldArray = entriesArray;
       let newCapacity = this.capacity * 2;
       this.capacity = newCapacity;
       this.buckets = new Array(newCapacity);
+
+      for (const pair of oldArray) {
+        this.set(pair.key, pair.value);
+      }
     }
     let indexInList = bucket.findIndex(givenKey);
     if (indexInList === -1) {
       // adds new values into a linked list
-      if (bucket.size === 0) {
+      if (bucket.size() === 0) {
         bucket.prepend({ key: givenKey, value: givenValue });
       } else {
         bucket.append({ key: givenKey, value: givenValue });
@@ -119,7 +120,9 @@ class HashMap {
   keys() {
     let allBucketKeys = [];
     for (const bucket of this.buckets) {
-      allBucketKeys = allBucketKeys.concat(bucket.findAllKeys());
+      if (bucket) {
+        allBucketKeys = allBucketKeys.concat(bucket.findAllKeys());
+      }
     }
     return allBucketKeys;
   }
@@ -127,7 +130,9 @@ class HashMap {
   values() {
     let allBucketValues = [];
     for (const bucket of this.buckets) {
-      allBucketValues = allBucketValues.concat(bucket.findAllValues());
+      if (bucket) {
+        allBucketValues = allBucketValues.concat(bucket.findAllValues());
+      }
     }
     return allBucketValues;
   }
@@ -135,8 +140,12 @@ class HashMap {
   entries() {
     let allBucketPairs = [];
     for (const bucket of this.buckets) {
-      allBucketPairs = allBucketPairs.concat(bucket.findAllPairs());
+      if (bucket) {
+        allBucketPairs = allBucketPairs.concat(bucket.findAllPairs());
+      }
     }
     return allBucketPairs;
   }
 }
+
+export { HashMap };

@@ -94,7 +94,7 @@ class LinkedList {
     let currentNode = this.#head;
     while (currentNode !== null) {
       let currentValue = currentNode.value;
-      if (currentValue.value.key === value) {
+      if (currentValue.key === value) {
         return true;
       }
       currentNode = currentNode.nextNode;
@@ -147,7 +147,7 @@ class LinkedList {
 
     if (index === finalIndex) {
       for (const value of values) {
-        this.append(value);
+        this.push(value);
       }
       return;
     }
@@ -216,8 +216,8 @@ class LinkedList {
     let currentNode = this.#head;
     let keyArray = [];
     while (currentNode !== null) {
-      if (currentNode.key !== null) {
-        keyArray.append(currentNode.value.key);
+      if (currentNode.value.key !== null) {
+        keyArray.push(currentNode.value.key);
       }
       currentNode = currentNode.nextNode;
     }
@@ -228,7 +228,7 @@ class LinkedList {
     let currentNode = this.#head;
     let valueArray = [];
     while (currentNode !== null) {
-      valueArray.append(currentNode.value.value);
+      valueArray.push(currentNode.value.value);
       currentNode = currentNode.nextNode;
     }
     return valueArray;
@@ -237,12 +237,12 @@ class LinkedList {
   findAllPairs() {
     let bucketPairs = [];
     if (!this.#head) {
-      return;
+      return [];
     } else {
       let currentNode = this.#head;
       while (currentNode !== null) {
         let pair = currentNode.value;
-        bucketPairs.append(pair);
+        bucketPairs.push(pair);
         currentNode = currentNode.nextNode;
       }
       return bucketPairs;
