@@ -22,23 +22,26 @@ class HashMap {
     let bucket = null;
     if (index < 0 || index >= this.buckets.length) {
       throw new Error("Trying to access index out of bounds");
-    };
+    }
 
-    // creates a new linked list at that index if one isn't there already
     if (!this.buckets[index]) {
-        bucket = new LinkedList();
-        this.buckets[index] = bucket;
+      bucket = new LinkedList();
+      this.buckets[index] = bucket;
     } else {
-        bucket = this.buckets[index];
+      bucket = this.buckets[index]; // point to the linked list already there
     }
 
-    // adds new values into a linked list
-    if (bucket.size === 0) {
-        bucket.prepend({storedKey: key, storedValue: value});
+    let indexInList = bucket.findIndex(key);
+    if (indexInList === -1) {
+      // adds new values into a linked list
+      if (bucket.size === 0) {
+        bucket.prepend({ storedKey: key, storedValue: value });
+      } else {
+        bucket.append({ storedKey: key, storedValue: value });
+      }
     } else {
-      bucket.append({storedKey: key, storedValue: value});
+      const node = bucket.at(indexInList);
+      node.value.storedValue = value;
     }
-
-    // When inserting into a bucket, if it’s empty, we insert the head of Linked List. If a head exists in a bucket, we follow that Linked List to add to the end of it.
   }
 }

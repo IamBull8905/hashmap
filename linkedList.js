@@ -105,9 +105,9 @@ class LinkedList {
   findIndex(value) {
     let currentNode = this.#head;
     let currentIndex = 0;
-    while (currentNode.nextNode !== null) {
+    while (currentNode !== null) {
       let currentValue = currentNode.value;
-      if (currentValue === value) {
+      if (currentValue.key === value) {
         return currentIndex;
       }
       currentNode = currentNode.nextNode;
